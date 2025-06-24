@@ -6,24 +6,11 @@
 /*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:23:12 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/06/21 15:19:30 by maelmahf         ###   ########.fr       */
+/*   Updated: 2025/06/24 19:25:41 by maelmahf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	type_of_redirect(char *redirect)
-{
-	if (!redirect)
-		return (-1);
-	if (ft_strcmp(redirect, "<") == 0)
-		return (op_redirect_input);
-	else if (ft_strcmp(redirect, ">") == 0)
-		return (op_redirect_output);
-	else if (ft_strcmp(redirect, ">>") == 0)
-		return (op_append);
-	return (-1);
-}
 
 int	append_(char *filename)
 {
@@ -70,41 +57,49 @@ void	handle_append(int *fd, char *file)
 		perror("");
 		return ;
 	}
-	dup2(*fd, STDOUT_FILENO);
 	close(*fd);
+	dup2(*fd, STDOUT_FILENO);
 }
 
-int pars_red(t_gnl *red)
+void	handle_her_doc(int *fd, char *file, t_herdoc *herdoc)
 {
-	int count;
-
-	count  = 0;
-	while (red)
+	int fd2;
+	ssize_t count;
+	
+	count = 0;
+	fd2 = open (file, O_WRONLY | O_CREAT | O_EXCL);
+	if (fd2 < 0)
 	{
-		red = red->next;
-		while (red && (red->type == -1 || red->type == var))
-		{
-			count++;
-			if (count > 1)
-			{
-				ft_putstr_fd("minishell: ambiguous redirect\n", 2);
-				return (0);
-			}
-			red = red->next;
-		}
-		count = 0;
+		perror("");
+		return ;
 	}
-	return (1);
+	while (herdoc)
+	{
+		if (!herdoc->next)
+			break;
+		herdoc = herdoc->next;
+	}
+	while (herdoc->list)
+	{
+		count = write(fd2, herdoc->list->str, str_len(herdoc->list->str));
+		if (count < 0)
+			return ;
+		herdoc->list = herdoc->list->next;
+	}
+	*fd = open(file, O_RDONLY);
+	unlink(file);
+	dup2(*fd, STDIN_FILENO);
+	close(*fd);
+	close(fd2);
 }
 
-int	apply_redirect(t_final_struct *struc)
+int	apply_redirect(t_final_struct *tmp)
 {
 	int				fd;
 	int				redirect;
 	char			*file;
-	t_final_struct	*tmp;
+	int flag = 0;
 
-	tmp = struc;
 	if (!pars_red(tmp->redirect))
 		return (-1);
 	while (tmp->redirect)
@@ -112,16 +107,18 @@ int	apply_redirect(t_final_struct *struc)
 		redirect = tmp->redirect->type;
 		file = tmp->redirect->next->str;
 		if (tmp->redirect->next->type == var && file[0] == '\0')
-		{
-			ft_putstr_fd("minishell: ambiguous redirect\n", 2);
-			return (-1);
-		}
-		if (redirect == op_redirect_input && tmp->redirect->type != -1)
+			return (ft_putstr_fd("minishell: ambiguous redirect\n", 2), -1);
+		if (redirect == op_redirect_input)
 			handle_input(&fd, file);
-		else if (redirect == op_redirect_output && tmp->redirect->type != -1)
+		else if (redirect == op_redirect_output)
 			handle_output(&fd, file);
-		else if (redirect == op_append && tmp->redirect->type != -1)
+		else if (redirect == op_append)
 			handle_append(&fd, file);
+		else if (flag == 0 && redirect == op_herdoc)
+		{
+			flag = 1;
+			handle_her_doc(&fd, file, tmp->herdoc);
+		}
 		else
 			return (-1);
 		tmp->redirect = tmp->redirect->next->next;

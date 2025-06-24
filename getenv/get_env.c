@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/19 14:51:47 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/06/21 15:17:05 by maelmahf         ###   ########.fr       */
+/*   Created: 2025/06/23 22:00:54 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/23 22:00:55 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ t_env	*env_new_node(char *key, char *data)
 	node->key = key;
 	node->data = data;
 	node->next = NULL;
+	node->oldpwd = NULL;
+	node->pwd = NULL;
 	return (node);
 }
 

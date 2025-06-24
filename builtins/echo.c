@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/25 06:40:56 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/06/21 15:01:01 by maelmahf         ###   ########.fr       */
+/*   Created: 2025/06/23 22:03:01 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/23 22:03:02 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 void	print_with_exit_status(const char *arg)
 {
-	int	i = 0;
-	int	in_single_quote = 0;
+	int	i;
+	int	in_single_quote;
 
+	i = 0;
+	in_single_quote = 0;
 	while (arg[i])
 	{
-		if (arg[i] == '\'' )
+		if (arg[i] == '\'')
 		{
 			in_single_quote = !in_single_quote;
 			putchar(arg[i]);
@@ -40,9 +42,11 @@ void	print_with_exit_status(const char *arg)
 
 void	exec_echo(t_exec **cmd)
 {
-	int	newline = 1;
-	int	i = 1;
+	int	newline;
+	int	i;
 
+	newline = 1;
+	i = 1;
 	if ((*cmd)->args[i] && ft_strcmp((*cmd)->args[i], "-n") == 0)
 	{
 		newline = 0;

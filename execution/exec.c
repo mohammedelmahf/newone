@@ -1,10 +1,12 @@
+/* ************************************************************************** */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
+/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/19 16:49:04 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/05/19 16:49:28 by oait-h-m         ###   ########.fr       */
+/*   Created: 2025/06/21 18:29:06 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/24 19:35:41 by maelmahf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +41,7 @@ char	*file_location(char *file, char *full_path)
 		len = str_len(token) + 1 + str_len(file) + 1;
 		path = ft_malloc(len, 1);
 		if (!path)
-		{
-			ft_putstr_fd("error: malloc failed\n", 2);
 			return (NULL);
-		}
 		ft_strncpy(path, token, str_len(token));
 		path[str_len(token)] = '\0';
 		ft_strcat(path, "/");
@@ -73,33 +72,46 @@ char	*file_path(char *file)
 	return (found);
 }
 
-int	exec_cmd(char **env, t_exec **cmd, t_final_struct *struc)
+static void	msg_error(char *arg)
 {
-	char	*path;
-	char	*file;
+	int	i;
 
-	if (!cmd || !*cmd || !(*cmd)->args || !(*cmd)->args[0])
-		exit(127);
-	if (is_builtins((*cmd)->args[0]) != -1)
+	i = 0;
+	ft_putstr_fd("command not found: ", 2);
+	while (arg[i])
 	{
-		exec_builtins(&(struc->lst_env), cmd, struc);
-		exit(g_exit_status);
-	}
-	path = struc->args->str;
-	file = file_path(path);
-	if (!file)
-	{
-		ft_putstr_fd("command not found: ", 2);
-		if (ft_strcmp((*cmd)->args[0], "$?") != 0)
+		if (arg[i] == '$' && arg[i + 1] == '?')
 		{
-			ft_putstr_fd((*cmd)->args[0], 2);
-			printf("\n");
+			printf("%d", g_exit_status);
+			i = i + 2;
 		}
 		else
-			printf("%d\n", g_exit_status);
-		ft_malloc(0, 0);
-		exit(127);
+			printf("%c", arg[i]);
+		i++;
 	}
-	execve(file, (*cmd)->args, env);
-	exit(126);
+	printf("\n");
+}
+
+int exec_cmd(char **env, t_exec **cmd, t_final_struct *struc)
+{
+    char    *file;
+
+    if (!cmd || !*cmd || !(*cmd)->args || !(*cmd)->args[0])
+        exit(127);
+
+    if (is_builtins((*cmd)->args[0]) != -1)
+    {
+        exec_builtins(&(struc->lst_env), cmd, struc);
+        exit(g_exit_status);
+    }
+
+    file = file_path((*cmd)->args[0]);
+    if (!file)
+    {
+        msg_error((*cmd)->args[0]);
+        ft_malloc(0, 0);
+        exit(127);
+    }
+    execve(file, (*cmd)->args, env);
+    exit(126);
 }

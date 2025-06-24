@@ -1,32 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncpy.c                                       :+:      :+:    :+:   */
+/*   pars_redirect.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 22:01:09 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/06/23 22:01:11 by oait-h-m         ###   ########.fr       */
+/*   Created: 2025/06/21 18:30:01 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/21 18:30:28 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strncpy(char *dest, const char *src, size_t n)
+int	pars_red(t_gnl *red)
 {
-	size_t	i;
+	int	count;
 
-	i = 0;
-	while (src[i] && i < n)
+	count = 0;
+	while (red)
 	{
-		dest[i] = src[i];
-		i++;
+		red = red->next;
+		while (red && (red->type == -1 || red->type == var))
+		{
+			count++;
+			if (count > 1)
+			{
+				ft_putstr_fd("minishell: ambiguous redirect\n", 2);
+				return (0);
+			}
+			red = red->next;
+		}
+		count = 0;
 	}
-	while (i < n)
-	{
-		dest[i] = '\0';
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
+	return (1);
 }

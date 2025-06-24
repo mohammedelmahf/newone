@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/19 15:50:10 by oait-h-m          #+#    #+#             */
-/*   Updated: 2025/06/21 15:20:56 by maelmahf         ###   ########.fr       */
+/*   Created: 2025/06/23 22:04:04 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/23 22:04:34 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,6 @@ int	is_valid_env_key(const char *s)
 		i++;
 	}
 	return (i != 0);
-}
-
-void	add_or_update_env(t_env **env, char *key, char *value)
-{
-	t_env	*cur;
-	t_env	*new_node;
-	t_env	*last;
-
-	last = NULL;
-	cur = *env;
-	while (cur)
-	{
-		if (ft_strcmp(cur->key, key) == 0)
-		{
-			cur->data = NULL;
-			cur->data = ft_strdup(value);
-			return ;
-		}
-		last = cur;
-		cur = cur->next;
-	}
-	new_node = env_new_node(ft_strdup(key), ft_strdup(value));
-	if (last)
-		last->next = new_node;
-	else
-		*env = new_node;
 }
 
 static void	print_msg_error(char *s)

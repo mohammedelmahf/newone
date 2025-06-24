@@ -12,15 +12,15 @@
 
 #include "../minishell.h"
 
-void exec_unset(t_env **env, t_exec **key)
+void	exec_unset(t_env **env, t_exec **key)
 {
-	t_env *curr;
-	t_env *prev;
+	t_env	*curr;
+	t_env	*prev;
 
 	curr = *env;
 	prev = NULL;
 	if (!key || !(*key)->args[0] || !(*key)->args[1])
-		return;
+		return ;
 	while (curr)
 	{
 		if (ft_strcmp(curr->key, (*key)->args[1]) == 0)
@@ -32,11 +32,10 @@ void exec_unset(t_env **env, t_exec **key)
 			curr->key = NULL;
 			curr->data = NULL;
 			curr = NULL;
-			break;
+			break ;
 		}
 		prev = curr;
 		curr = curr->next;
 	}
 	g_exit_status = 0;
 }
-

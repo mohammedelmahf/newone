@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 12:03:24 by hmouis            #+#    #+#             */
-/*   Updated: 2025/06/21 15:20:26 by maelmahf         ###   ########.fr       */
+/*   Created: 2025/06/23 22:05:54 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/23 22:05:56 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,17 @@ typedef struct s_var_env
 /*type of tokens*/
 typedef enum e_types
 {
-	op_redirect_input,  // <
-	op_redirect_output, // >
-	op_herdoc,          // <<
-	op_append,          // >>
-	op_pipe,            // |
+	op_redirect_input,// <
+	op_redirect_output,// >
+	op_herdoc,// <<
+	op_append,// >>
+	op_pipe,// |
 	word,
 	var,
 	string,
 	single_quote,
 	double_quote,
-	TYPE_INVALID = -1
+	type_invalid = -1
 }							t_types;
 
 typedef enum e_builtins_type
@@ -137,6 +137,15 @@ typedef struct s_final_struct
 	t_env					*lst_env;
 	struct s_final_struct	*next;
 }							t_final_struct;
+
+typedef struct s_child_params
+{
+	t_final_struct	*fnl;
+	int				in_fd;
+	int				out_fd;
+	char			**env;
+	t_exec			**exec;
+}	t_child_params;
 
 typedef struct s_new_exp
 {
@@ -322,8 +331,11 @@ void						exec_pwd(t_env **env);
 void						exec_cd(t_env **env, t_exec **cmd);
 char						*get_variable(t_env **env, char *key);
 int							type_of_redirect(char *redirect);
-int							apply_redirect(t_final_struct *struc);
+int							pars_red(t_gnl *red);
+int							apply_redirect(t_final_struct *tmp);
 void						update_env(t_env **env, char *oldpwd, char *pwd);
+void						add_or_update_env(t_env **env, char *key,
+								char *value);
 
 /*garbage collector*/
 void						ft_lstdelone(t_list *lst, void (*del)(void *));

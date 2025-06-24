@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user_input1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maelmahf <maelmahf@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oait-h-m <oait-h-m@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/21 16:09:07 by hmouis            #+#    #+#             */
-/*   Updated: 2025/06/21 15:18:00 by maelmahf         ###   ########.fr       */
+/*   Created: 2025/06/23 22:02:22 by oait-h-m          #+#    #+#             */
+/*   Updated: 2025/06/23 22:02:24 by oait-h-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	valid_operator(char c1, char c2)
 	return (c1 == c2 && (c1 == '<' || c1 == '>'));
 }
 
-int	token_quote(int *i, char *input,t_var *var)
+int	token_quote(int *i, char *input, t_var *var)
 {
 	char	c;
 
